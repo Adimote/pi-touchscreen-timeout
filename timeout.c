@@ -138,13 +138,15 @@ int main(int argc, char* argv[]){
                 for (i = 0; i < num_dev; i++) {               
                         event_size = read(eventfd[i], event, size*64);
                         if(event_size != -1) {
-                                printf("%s Value: %d, Code: %x\n", device[i], event[0].value, event[0].code);
                                 touch = now;
-
-                                if(on == '1') {
-                                        printf("Turning On\n");
-                                        on = '0';
-                                        write(lightfd, &on, sizeof(char));
+				if(event[0].code == 116) { // If power button pressed
+					printf("Turning Off\n");
+					on = '1';
+					write(lightfd, &on, sizeof(char));
+				} else if(on == '1') {
+					printf("Turning On\n");
+					on = '0';
+					write(lightfd, &on, sizeof(char));
                                 }
                         }
                 }
